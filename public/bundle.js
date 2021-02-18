@@ -1918,16 +1918,28 @@ var App = function App() {
       rgba = _useState4[0],
       setRgba = _useState4[1];
 
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({}),
+      _useState6 = _slicedToArray(_useState5, 2),
+      imageTrigger = _useState6[0],
+      setImage = _useState6[1];
+
+  var canvas = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
-    var canvas = document.getElementById('myCanvas');
-    var context = canvas.getContext('2d');
+    var context = canvas.current.getContext('2d');
     var image = new Image();
     image.src = 'picture.png';
     image.addEventListener('load', function () {
-      canvas.width = image.naturalWidth;
-      canvas.height = image.naturalHeight;
+      canvas.current.width = image.naturalWidth;
+      canvas.current.height = image.naturalHeight;
       context.drawImage(image, 0, 0);
     });
+    return function () {
+      image.removeEventListener('load', function () {
+        canvas.current.width = image.naturalWidth;
+        canvas.current.height = image.naturalHeight;
+        context.drawImage(image, 0, 0);
+      });
+    };
   }, []);
 
   var handleClick = function handleClick(event) {
@@ -1939,8 +1951,7 @@ var App = function App() {
     };
 
     var mousePosition = getMousePosition(event);
-    var canvas = event.target;
-    var context = canvas.getContext('2d');
+    var context = canvas.current.getContext('2d');
 
     var _context$getImageData = context.getImageData(mousePosition.x, mousePosition.y, 1, 1),
         imageData = _context$getImageData.data;
@@ -2026,15 +2037,21 @@ var App = function App() {
   }();
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", {
-    id: "ux"
+    id: "pixelpicker"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("canvas", {
     id: "myCanvas",
-    onClick: function onClick(e) {
-      return handleClick(e);
-    }
+    ref: canvas,
+    onClick: handleClick
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", {
-    id: "display"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("h2", null, "Color: ", name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("p", null, "R: ".concat(rgba[0], " G: ").concat(rgba[1], " B: ").concat(rgba[2], " A: ").concat(rgba[3])), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(_NewImageForm__WEBPACK_IMPORTED_MODULE_2__.default, {
+    id: "ui"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("h2", null, "Color: ", name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", {
+    style: {
+      width: 200,
+      height: 200,
+      border: '1px solid black',
+      backgroundColor: "rgba(".concat(rgba[0], ", ").concat(rgba[1], ", ").concat(rgba[2], ", ").concat(rgba[3], ")")
+    }
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("p", null, "R: ".concat(rgba[0], " G: ").concat(rgba[1], " B: ").concat(rgba[2], " A: ").concat(rgba[3])), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(_NewImageForm__WEBPACK_IMPORTED_MODULE_2__.default, {
     handleSubmit: handleSubmit
   })));
 };
