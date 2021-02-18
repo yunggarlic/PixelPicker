@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const axios = require('axios');
 const fs = require('fs');
+const sharp = require('sharp')
 
-const createFile = (response) => {
+const createFile = async (response) => {
   const outputPath = './public/picture.png';
   const output = fs.createWriteStream(outputPath);
 
@@ -11,19 +12,24 @@ const createFile = (response) => {
     output.write(new Buffer.from(chunk));
   });
   stream.on('end', async () => {
-    output.end();
+   await output.end();
   });
 };
+
+const resizeFile = (response) => {
+  sharp(response).resize({width: 500}).toFile('./public/picture.png')
+}
 
 router.get('/', async (req, res) => {
   try {
     const response = await axios.get(
-      'https://cdn.britannica.com/90/195990-050-4DD68279/Self-Portrait-Vincent-van-Gogh-Rijksmuseum-Amsterdam-1887.jpg',
+      'https://www.holland.com/upload_mm/2/5/2/56781_fullimage_vincent_van_gogh.jpg',
       {
-        responseType: 'stream',
+        responseType: 'arraybuffer',
       }
     );
-    createFile(response);
+    //await createFile(response);
+    resizeFile(response.data)
     res.end();
   } catch (e) {
     console.error(e);
@@ -52,19 +58,20 @@ router.post('/', async (req, res, next) => {
     //   }
     // });
 
-    fs.unlinkSync('../client/public/picture.png', (err) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-    });
+    // fs.unlinkSync('./public/picture.png', (err) => {
+    //   if (err) {
+    //     return;
+    //   }
+    // });
 
     const newImageUrl = req.body.url;
-    const response = await axios.get(newImageUrl, {
-      responseType: 'stream',
-    });
-    createFile(response);
-    //await resizeImage('../client/public/picture.png');
+    const response = await axios.get(
+      newImageUrl,
+      {
+        responseType: 'arraybuffer',
+      }
+    );
+    resizeFile(response.data)
     res.end();
   } catch (error) {
     console.error(error);
@@ -72,7 +79,7 @@ router.post('/', async (req, res, next) => {
 });
 
 router.delete('/', async (req, res) => {
-  fs.unlink('../client/public/resized_pic.png', (err) => {
+  fs.unlink('./public/resized_pic.png', (err) => {
     if (err) {
       console.error(err);
       return;
