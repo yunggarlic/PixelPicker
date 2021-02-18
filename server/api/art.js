@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs');
 
 const createFile = (response) => {
-  const outputPath = '../client/public/picture.png';
+  const outputPath = './public/picture.png';
   const output = fs.createWriteStream(outputPath);
 
   const stream = response.data;

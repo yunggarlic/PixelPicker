@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import NewImageForm from './NewImageForm'
 
 const App = () => {
   const [name, setName] = useState('');
@@ -62,7 +63,7 @@ const App = () => {
 
   return (
     <div id="ux">
-      <canvas id="myCanvas"></canvas>
+      <canvas id="myCanvas" onClick={(e) => handleClick(e)}></canvas>
       <div id="display">
         <h2>Color: {name}</h2>
         <p>{`R: ${rgba[0]} G: ${rgba[1]} B: ${rgba[2]} A: ${rgba[3]}`}</p>
