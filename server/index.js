@@ -13,7 +13,7 @@ app.use(compression())
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-//app.use('/api', require('./api'))
+app.use('/api', require('./api'))
 
 app.use('*', (req, res) => {
   res.send(path.join(__dirname, '..', 'client', 'public/index.html'))
